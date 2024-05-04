@@ -20,14 +20,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
           setTasks(response.data)
         }
       } catch (error) {
-        if (error.response) {
-          console.error('Error response status:', error.response.status);
-          console.error('Error response data:', error.response.data);
-        } else if (error.request) {
-          console.error('No response received:', error.request);
-        } else {
-          console.error('Error:', error.message);
-        }
+        console.error('Error:', error.message);
       }
     };
 
@@ -53,7 +46,21 @@ const Dashboard = ({ setIsAuthenticated }) => {
       if (result.value) {
         const [task] = tasks.filter(task => task.id === id);
         try {
-          const response = await axios.delete('http://127.0.0.1:3000/tasks/' + task.id);
+          let config = {
+            method: 'delete',
+            maxBodyLength: Infinity,
+            url: `http://localhost:3000/tasks/${id}`,
+            headers: { }
+          };
+
+          axios.request(config)
+          .then((response) => {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
           Swal.fire({
             icon: 'success',
             title: 'Deleted!',
@@ -66,7 +73,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
           localStorage.setItem('tasks_data', JSON.stringify(tasksCopy));
           setTasks(tasksCopy);
         } catch (error) {
-          console.error('Error deleting data:', error); // Changed from 'Error creating data' to 'Error deleting data'
+          console.error('Error deleting data:', error);
         }
       }
     });

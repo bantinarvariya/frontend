@@ -19,8 +19,9 @@
 To get a local copy of the code, clone it using git:
 
 ```
-git clone https://github.com/bantinarvariya/crud-app.git
-cd crud-app
+git clone https://github.com/bantinarvariya/frontend
+
+cd frontend
 ```
 
 Install dependencies:

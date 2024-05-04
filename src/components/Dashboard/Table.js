@@ -2,9 +2,6 @@ import React from 'react';
 import axios from 'axios';
 
 const Table = ({ tasks, handleEdit, handleDelete }) => {
-  tasks.forEach((task, i) => {
-    task.id = i + 1;
-  });
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -27,9 +24,9 @@ const Table = ({ tasks, handleEdit, handleDelete }) => {
         </thead>
         <tbody>
           {tasks.length > 0 ? (
-            tasks.map((task, i) => (
+            tasks.map((task) => (
               <tr key={task.id}>
-                <td>{i + 1}</td>
+                <td>{task.id}</td>
                 <td>{task.title}</td>
                 <td>{task.description}</td>
                 <td>{task.status}</td>

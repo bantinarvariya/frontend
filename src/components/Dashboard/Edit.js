@@ -21,26 +21,32 @@ const Edit = ({ tasks, selectedTask, setTasks, setIsEditing }) => {
     }
 
     const task = {
-      id,
       title,
       description,
       status,
     };
 
-    for (let i = 0; i < tasks.length; i++) {
-      if (tasks[i].id === id) {
-        tasks.splice(i, 1, task);
-        break;
-      }
-    }
+    let config = {
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `http://localhost:3000/tasks/${id}`,
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : task
+    };
 
-    try {
-      const response = await axios.put("http://localhost:3000/tasks/" + task.id, task);
+    await axios.request(config)
+    .then((response) => {
       if(response.status == 200){
-        setTasks(response.data)
-        localStorage.setItem('tasks_data', JSON.stringify(tasks));
         setIsEditing(false);
-
+        for (let i = 0; i < tasks.length; i++) {
+          if (tasks[i].id === response.data.id) {
+            tasks.splice(i, 1, task);
+            break;
+          }
+        }
+        // setTasks(tasks);
         Swal.fire({
           icon: 'success',
           title: 'Updated!',
@@ -49,17 +55,16 @@ const Edit = ({ tasks, selectedTask, setTasks, setIsEditing }) => {
           timer: 1500,
         });
       }
-    } catch (error) {
-      console.error('Error creating data:', error);
-    }
-
+    })
+    .catch((error) => {
+    });
   };
 
   return (
     <div className="small-container">
       <form onSubmit={handleUpdate}>
         <h1>Edit Task</h1>
-        <label htmlFor="title">First Name</label>
+        <label htmlFor="title">Title</label>
         <input
           id="title"
           type="text"
@@ -67,7 +72,7 @@ const Edit = ({ tasks, selectedTask, setTasks, setIsEditing }) => {
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
-        <label htmlFor="description">Last Name</label>
+        <label htmlFor="description">Description</label>
         <input
           id="description"
           type="text"
